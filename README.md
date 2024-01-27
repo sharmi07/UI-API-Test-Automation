@@ -9,8 +9,8 @@ Concepts Included:
 
 Tools:
 
-    Maven,
-    TestnG,
+    Maven
+    TestnG
     Selenium Webdriver
 
 Requirements:
