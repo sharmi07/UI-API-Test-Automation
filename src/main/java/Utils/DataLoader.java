@@ -139,9 +139,9 @@ public class DataLoader extends GlobalStore {
                 data[0] = "VerifyLogins.xlsx";
                 data[1] = "Admin";
                 break;
-            case "verifyPswdAvailAdminLogin":
+            case "verifyCheckoutTest":
                 data[0] = "VerifyLogins.xlsx";
-                data[1] = "SeedPasswordAAdmin";
+                data[1] = "User1";
                 break;
             default:
                 data[0] = "VerifyLogins.xlsx";
