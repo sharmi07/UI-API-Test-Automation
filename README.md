@@ -4,6 +4,7 @@ Concepts Included:
 
     Parallel test runs
     Page Object pattern
+    Page factory
     Common web page interaction methods
     Commonly used test utility classes
 
