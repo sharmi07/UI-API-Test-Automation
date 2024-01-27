@@ -1,14 +1,15 @@
 Simple Java framework with multithreading support
 
 Concepts Included: 
-    Parallel test runs
-    Page Object pattern
-    Common web page interaction methods
+
+    Parallel test runs,
+    Page Object pattern,
+    Common web page interaction methods,
     Commonly used test utility classes
 
 Tools:
-    Maven
-    TestnG
+    Maven,
+    TestnG,
     Selenium Webdriver
 
 Requirements:
