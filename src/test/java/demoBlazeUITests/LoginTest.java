@@ -1,4 +1,4 @@
-package demoBlazeCheckout;
+package demoBlazeUITests;
 
 import AppPages.HomePage;
 import BaseFramework.BaseTest;
@@ -10,8 +10,6 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import java.util.Set;
 
 public class LoginTest extends BaseTest {
     WebDriver driver;
@@ -36,18 +34,18 @@ public class LoginTest extends BaseTest {
         reportStep("Execution COMPLETED for the test: verifySigningUpTest", "INFO");
     }
 
-   @Description("Verify signing up...")
+    @Description("Verify signing up...")
     @Epic("SignUp/Login")
     @Feature("UserCreation")
-    @Test()
-    public void verifyLoginTest() throws Exception {
+    @Test(dataProviderClass = BaseTest.class , dataProvider="readTestData")
+    public void verifyLoginTest(String uname, String pwd, String keyword) throws Exception {
         reportStep("Execution STARTED for the test: verifyLoginTest", "INFO");
         reportStep("Step 1: Logging in...", "INFO");
         driver = DriverThreadManager.getDriver();
         driver.get(appURL);
 
         HomePage hp = new HomePage(driver);
-        hp.loginIntoPortal(driver, "admin", "admin");
+        hp.loginIntoPortal(driver, uname, pwd);
         reportStep("PASSED: Signed up successfully", "PASS",driver);
         reportStep("Execution COMPLETED for the test: verifyLoginTest", "INFO");
     }

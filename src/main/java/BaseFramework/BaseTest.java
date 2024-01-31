@@ -15,9 +15,13 @@ import java.lang.reflect.Method;
 public class BaseTest extends GlobalStore {
 
     public static String appURL;
+    public static String apiURL;
+
+    GlobalStore GS = new GlobalStore();
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
-        appURL = "https://www.demoblaze.com/index.html";
+        appURL = GS.getAppURL();
+        apiURL = GS.getApiURL();
     }
 
     @BeforeMethod(alwaysRun = true)

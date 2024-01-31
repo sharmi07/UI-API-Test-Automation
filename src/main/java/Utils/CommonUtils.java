@@ -1,9 +1,18 @@
 package Utils;
 
+import Pojos.Pet;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import io.restassured.mapper.ObjectMapperDeserializationContext;
+import io.restassured.mapper.ObjectMapperSerializationContext;
+
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Random;
 
 
@@ -101,5 +110,17 @@ public class CommonUtils {
         }
 
         return saltStr;
+    }
+
+    public String generateStringFromResource(String path) throws IOException {
+      /*  ObjectMapper objectMapper = new ObjectMapper();
+        Pet p = objectMapper.readValue(Files.readAllBytes(Paths.get(path)),
+                Pet.class);
+        ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
+        String json = ow.writeValueAsString(p);*/
+
+       // return json;
+        return new String(Files.readAllBytes(Paths.get(path)));
+
     }
 }

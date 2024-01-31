@@ -17,6 +17,9 @@ public class GlobalStore {
 	private static final Logger logger = LogManager.getLogger(GlobalStore.class);
 	public static long waitTime;
 
+	public static String appURL;
+	public static String apiURL;
+
 	public GlobalStore() {
 		/**
 		 * Loading config files
@@ -27,8 +30,18 @@ public class GlobalStore {
 
 		// this will force a reconfiguration
 		context.setConfigLocation(file.toURI());
+
+		appURL = "https://www.demoblaze.com/index.html";
+		apiURL = "https://petstore.swagger.io/v2";
 	}
 
+	public String getApiURL() {
+		return apiURL;
+	}
+
+	public String getAppURL() {
+		return appURL;
+	}
 
 	@Attachment
 	public byte[] takeScreenShot(WebDriver driver) {

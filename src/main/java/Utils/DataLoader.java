@@ -18,7 +18,7 @@ public class DataLoader extends GlobalStore {
         reportStep("Loading all data of the project", "INFO");
     }
 
-    public String[][] getAllSheetData(String sheetName, String UserType) {
+    public String[][] getAllSheetData(String sheetName, String keyword) {
         String[][] data = null;
         String HOMEDIR = System.getProperty("user.dir");
         String dataSheetFullPath = HOMEDIR + File.separator + "testdata" + File.separator + sheetName;
@@ -51,6 +51,7 @@ public class DataLoader extends GlobalStore {
             // Initialize data set
             int noRows = sheet.getLastRowNum();
             int noCols = sheet.getRow(0).getLastCellNum();
+            System.out.println("Number of columns:"+ noCols);
 
             // Iterate through each rows one by one
             Iterator<Row> rowIterator = sheet.iterator();
@@ -59,7 +60,7 @@ public class DataLoader extends GlobalStore {
             int colCount = 0;
             String cellValue = null;
 
-            int whichRowToGet = getRowNumForDataToRead(UserType, rowIterator);
+            int whichRowToGet = getRowNumForDataToRead(keyword, rowIterator);
             // System.out.println("Row found for retirval:"+ whichRowToGet);
 
             // Initialize size
@@ -142,6 +143,10 @@ public class DataLoader extends GlobalStore {
             case "verifyCheckoutTest":
                 data[0] = "VerifyLogins.xlsx";
                 data[1] = "User1";
+                break;
+            case "verifyAddingPetTest":
+                data[0] = "PetCreation.xlsx";
+                data[1] = "Pet5";
                 break;
             default:
                 data[0] = "VerifyLogins.xlsx";
