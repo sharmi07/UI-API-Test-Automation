@@ -1,4 +1,4 @@
-package demoBlazeCheckout;
+package demoBlazeUITests;
 
 import AppPages.HomePage;
 import BaseFramework.BaseTest;

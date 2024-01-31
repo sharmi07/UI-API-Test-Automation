@@ -49,7 +49,7 @@ public class DataLoader extends GlobalStore {
             // XSSFSheet sheet = workbook.getSheetAt(0);
 
             // Initialize data set
-            int noRows = sheet.getLastRowNum();
+            //int noRows = sheet.getLastRowNum();
             int noCols = sheet.getRow(0).getLastCellNum();
             System.out.println("Number of columns:"+ noCols);
 

@@ -51,7 +51,7 @@ public class BaseTest extends GlobalStore {
 
     @AfterMethod
     public void closeDriver() throws InterruptedException {
-        reportStep("Thread ID in aftermethod is:" + String.valueOf(Thread.currentThread().getId()), "INFO");
+        reportStep("Thread ID in aftermethod is:" + Thread.currentThread().getId(), "INFO");
         reportStep("Thread Name in aftermethod is:" + Thread.currentThread().getName(), "INFO");
         DriverThreadManager.unload();
     }
@@ -71,14 +71,13 @@ public class BaseTest extends GlobalStore {
      * test cases.
      *
      * @param m
-     * @return.
      */
     @DataProvider(name = "readTestData")
     protected Object[][] readTestData(Method m) {
         String methodName = m.getName();
         reportStep("Method Name is: " + methodName, "INFO");
         DataLoader DL = new DataLoader();
-        String data[] = DL.getDataSheetName(methodName);
+        String[] data = DL.getDataSheetName(methodName);
         return DL.getAllSheetData(data[0], data[1]);
     }
 }
