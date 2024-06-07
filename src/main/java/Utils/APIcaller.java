@@ -100,27 +100,6 @@ public class APIcaller {
 
 		//return UUID;
 	}
-	
-	/**
-	 * Delete User with User Id having specific Email Prefix
-	 * 
-	 * @param authUrl
-	 * @param json
-	 * @param AdminEmail
-	 * @param AdminPassword
-	 * @return
-	 */
-//	public boolean deleteUserWithUserId(String authUrl, String getUserIdUrl, String deleteUrl, ContentType json, String AdminEmail,
-//			String AdminPassword, String emailPrefix, WebDriver driver) {
-	//	boolean status = true;
-	//	String token = postloginAndGetAccessToken(authUrl,json,AdminEmail,AdminPassword);
-	//	JsonPath path = get(getUserIdUrl+emailPrefix, json,"Bearer " + token );//.getString("content.employee.id"); //res.jsonPath().getString("content.access_token");
-	//	List<String> userIds = path.getList("content.employee.id");
-	//	for (int i = 0; i < userIds.size(); i++) {
-	//		status = getUserIdAndDeleteWithEmailPrefix(deleteUrl, json, "Bearer " + token, userIds.get(i), driver);
-	//	}
-	//	return status;
-	//}*/
 
 
 }
