@@ -104,43 +104,7 @@ public class UIMethods {
         return status;
     }
 
-    /**
-     * Verify the given image element is present
-     *
-     * @param UIElement
-     * @param driver
-     * @return
-     */
-   /* public boolean isImgPresent(WebElement UIElement, WebDriver driver) {
-        boolean imgFound = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));//Prachi - added
-            //	waitForThisFieldToVisible(UIElement, driver);//Prachi- added
-            wait.until(ExpectedConditions.visibilityOf(UIElement));
-            imgFound = UIElement.isDisplayed();
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-            GS.takeScreenShot(driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-            GS.takeScreenShot(driver);
-        }
-        return imgFound;
-    }*/
-
-    /**
-     * It checks if the UI element is present on webpage
-     *
-     * @param UIElement
-     * @param driver
-     * @return
-     */
-  /*  public boolean isElementPresent(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        return (isImgPresent(UIElement, driver));
-    }*/
-
+   
     /**
      * It gets HREF
      *
@@ -206,39 +170,7 @@ public class UIMethods {
         return status;
     }
 
-    /**
-     * Make sure, provider details are not there in HCP -->General information
-     *
-     * @param element
-     * @param driver
-     * @param whatToLookFor
-     */
-  /*  public void verifyProviderMsgNotPresent(WebElement element, WebDriver driver, String whatToLookFor) {
-        String data = "NoDataFound";
-        WebDriverWait wait = null;
-        int status = 1;
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            wait.until(ExpectedConditions.visibilityOf(element));
-            element.click();
-
-            // Look for provider text
-            boolean isPresent = driver.getPageSource().contains(whatToLookFor);
-            if (!isPresent)
-                GS.reportStep("Check:   provider text is not present", "FAIL", driver);
-            else {
-                GS.reportStep("provider text is present", "PASS", driver);
-                Assert.fail("provider text is present");
-            }
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-
-    }*/
+  
 
     /**
      * Verify given text is present on web page
