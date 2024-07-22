@@ -418,7 +418,7 @@ public class UIMethods {
      * @param data
      * @return
      */
-    public boolean enterTextAndPressEnter(WebElement UIElement, WebDriver driver, String data) {
+    public boolean enterTextAndPressEnter(WebDriver driver, WebElement UIElement, String data) {
         boolean status = false;
         WebDriverWait wait = null;
         try {
@@ -555,8 +555,6 @@ public class UIMethods {
     }
 
 
-    //Prachi added
-    //start code
     /**
      * It reads the data from the field and return to the caller if field is empty/clear
      * Also it sets the cursor back to starting position
@@ -820,27 +818,6 @@ public class UIMethods {
         toDateElement.sendKeys(toDate);
         toDateElement.sendKeys(Keys.ENTER);
     }
-
-//	/**
-//	 * This method will click on Drop down
-//	 *
-//	 * @param driver
-//	 * @return
-//	 */
-//	public boolean ClickONDropDown(WebDriver driver, WebElement UIElement) {
-//		boolean status = false;
-//		WebDriverWait wait = null;
-//			try {
-//				wait = new WebDriverWait(driver, pageLoadTime);
-//				WebElement element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
-//			// Click on downarrow
-//			UIElement.click();
-//			status = true;
-//			} catch (Exception e) {
-//			GS.reportStep(e.getMessage(), "FAIL", driver);
-//		}
-//		return status;
-//	}
 
 
     /**
