@@ -17,10 +17,22 @@ import BaseFramework.GlobalStore;
 
 public class UIMethods {
     static int MaxInteractiveWaitTime = 15;
-    static int pageLoadTime = 36;
+    static int pageLoadTime = 30;
     GlobalStore GS = new GlobalStore();
 
-    /************ Click Helper Methods *********************/
+    
+    /**
+     * Wait for the page to load with default page load time 30secs
+     * @param driver
+     */
+    public static void waitForPageLoad(WebDriver driver) {
+        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
+        wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState")
+                .equals("complete"));
+    }
+
+
+    /************ CLICK HELPER METHODS *********************/
 
      /**
      * Clicks on link
@@ -87,36 +99,64 @@ public class UIMethods {
 
     
     /**
-     * Waits for the element to be visible
+     * This method will click on React JS Drop down
      *
-     * @param UIElement
      * @param driver
      * @return
-     *  true if element is visible and exception is not thrown, false otherwise
+     *    false if exception thrown, true otherwise
      */
-
-    public boolean waitForThisElementToBeVisible(WebElement UIElement, WebDriver driver) {
-        WebDriverWait wait;
-        boolean isVisible = true;
+    public boolean ClickONReactJSDropDown(WebDriver driver) {
+        boolean status = false;
+        String xpath = "//div[@class='react-select__indicators css-1wy0on6']//div";
         try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(pageLoadTime));
-            wait.until(ExpectedConditions.visibilityOf(UIElement));
-
-        } catch (NoSuchElementException NSE) {
-           GS.reportStep(NSE.getMessage(), "FAIL", driver);
-           GS.takeScreenShot(driver);
-            isVisible = false;
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-            GS.takeScreenShot(driver);
-            isVisible = false;
+            WebElement dropDown = driver.findElement(By.xpath(xpath));
+            dropDown.click();
+            Thread.sleep(2000);
+            // Grab the elements
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(12));//Prachi - increased wait by 2 secs
+            wait.until(ExpectedConditions.elementToBeClickable((By.className("react-select__menu"))));
+            List<WebElement> options = driver.findElements(By.className("react-select__menu"));
+            for (WebElement option : options) {
+                option.click();
+                status = true;
+            }
+            // Click on downarrow
+            dropDown.click();
+        } catch (Exception e) {
+            GS.reportStep(e.getMessage(), "FAIL",driver);
         }
-
-        return isVisible;
+        return status;
     }
 
 
-    /****************** Text Helper Methods **********************/
+    /**
+     * This method clicks the element using Actions class
+     * 
+     * @param UIElement
+     * @param driver
+     * @param keys
+     * @return
+     */
+    public boolean clickKeys(WebElement UIElement, Keys key, WebDriver driver) {
+        boolean status = false;
+        WebDriverWait wait = null;
+        try {
+            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
+            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
+            element.click();
+            Actions actions = new Actions(driver);
+
+            actions.sendKeys(key).build().perform();//press down arrow key
+
+            actions.sendKeys(key).build().perform();//press enter
+            Thread.sleep(GS.waitTime);
+        }catch (InterruptedException e) {
+            GS.reportStep("Clicking On Security Link not working", "FAIL", driver);
+        }
+        return status;
+    }
+
+    /****************** TEXT HELPER METHODS **********************/
     
     /**
      * Gets data within the HTML tag
@@ -207,13 +247,23 @@ public class UIMethods {
         return data;
     }
 
-    public String getMyTextAttribute(WebElement UIElement, WebDriver driver) {
+    
+    /**
+    * This method gets the text from an attribute
+    *
+    * @param UIElement
+    * @param attribute
+    * @param driver
+    * @return
+    *   data - text from the attribute of the UIElement
+    */
+    public String getTextFromAttribute(WebElement UIElement, String attribute, WebDriver driver) {
         String data = "NoDataFound";
         WebDriverWait wait = null;
         try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
+            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
             wait.until(ExpectedConditions.visibilityOf(UIElement));
-            data = UIElement.getAttribute("title");
+            data = UIElement.getAttribute(attribute);
         } catch (NoSuchElementException NSE) {
             GS.reportStep(NSE.getMessage(), "FAIL", driver);
         } catch (TimeoutException TO) {
@@ -226,32 +276,6 @@ public class UIMethods {
 
   
 
-    /**
-     * Verify given text is present on web page
-     */
-    public int verifyTextPresentOnPage(WebDriver driver, String whatToLookFor) {
-        int status = 0;
-
-        try {
-            Thread.sleep(3000);//prachi - added
-            UIMethods.waitForPageLoad(driver);
-            boolean isPresent = driver.getPageSource().contains(whatToLookFor);
-            if (isPresent) {
-                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was found", "PASS", driver);
-                status = 1;
-            } else
-                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was not found", "INFO", driver);
-
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-
-        return status;
-    }
 
 
     /**
@@ -344,31 +368,7 @@ public class UIMethods {
         return status;
     }
 
-    /*It clicks Keys
-     * @author
-     * @param UIElement
-     * @param driver
-     * @param keys
-     * @return
-     */
-    public boolean clickKeys(WebElement UIElement, WebDriver driver, Keys key) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
-            element.click();
-            Actions actions = new Actions(driver);
 
-            actions.sendKeys(key).build().perform();//press down arrow key
-
-            actions.sendKeys(key).build().perform();//press enter
-            Thread.sleep(GS.waitTime);
-        }catch (InterruptedException e) {
-            GS.reportStep("Clicking On Security Link not working", "FAIL", driver);
-        }
-        return status;
-    }
     /**
      * It enters the text into text field and PREEE ENTER Key
      *
@@ -431,33 +431,6 @@ public class UIMethods {
     }
 
 
-    /**
-     * It reads the data from the field and return to the caller
-     *
-     * @param driver
-     * @param UIElement
-     * @return
-     */
-    public String getDataFromTextField(WebDriver driver, WebElement UIElement) {
-        String data = "EMPTY";
-        WebDriverWait wait = null;
-
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));;
-            //isElementPresent(driver, element);//Prachi - added
-            data = UIElement.getAttribute("value");
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return data;
-
-    }
-
 
     /**
      * It reads the data from the field and return to the caller if field is empty/clear
@@ -519,7 +492,6 @@ public class UIMethods {
 
     }
 
-    //end code
 
     /**
      * Search and pick a record
@@ -627,73 +599,6 @@ public class UIMethods {
     }
 
     /**
-     * This method will click on React JS Drop down
-     *
-     * @param driver
-     * @return
-     */
-    public boolean ClickONReactJSDropDown(WebDriver driver) {
-        boolean status = false;
-        String xpath = "//div[@class='react-select__indicators css-1wy0on6']//div";
-        try {
-            WebElement dropDown = driver.findElement(By.xpath(xpath));
-            dropDown.click();
-            Thread.sleep(2000);//prachi increased wait by 1 sec
-            // Grab the elements
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(12));//Prachi - increased wait by 2 secs
-            wait.until(ExpectedConditions.elementToBeClickable((By.className("react-select__menu"))));
-            List<WebElement> options = driver.findElements(By.className("react-select__menu"));
-            for (WebElement option : options) {
-                option.click();
-                status = true;
-            }
-            // Click on downarrow
-            dropDown.click();
-        } catch (Exception e) {
-            GS.reportStep(e.getMessage(), "FAIL",driver);
-        }
-        return status;
-    }
-
-    /**
-     * This method will click on Drop down
-     *
-     * @param driver
-     * @return
-     */
-    public boolean ClickONDropDown(WebDriver driver, WebElement UIElement) {
-        boolean status = false;
-        try {// Click on downarrow
-            UIElement.click();
-            status = true;
-        } catch (Exception e) {
-            GS.reportStep(e.getMessage(), "FAIL", driver);
-        }
-        return status;
-    }
-
-    /**
-     * This method will download userguide
-     *
-     * @param driver
-     * @return
-     */
-    public  boolean clickdownloaduserguide(WebDriver driver)
-    {
-        boolean status= false;
-        try {
-            String xpath  = "//button[@class='MuiButtonBase-root MuiIconButton-root jss5034']";
-            WebElement download = driver.findElement(By.xpath(xpath));
-            download.click();
-            status= true;
-        }
-        catch (Exception e)
-        {
-            GS.reportStep(e.getMessage(), "FAIL", driver);
-        }
-        return status;
-    }
-    /**
      * It will select the date from tomorrow to next month same date
      *
      * @param driver
@@ -724,39 +629,24 @@ public class UIMethods {
     }
 
 
-    /**
-     * ... Delete for any element
-     *
-     * @param driver
-     * @param UIElement
-     * @return
-     */
 
-    public boolean deleteRecord(WebDriver driver, WebElement UIElement) {
+
+        /**
+     * Verify given text is present in a web element
+     */
+    public boolean verifyTextOfAnElement(WebDriver driver, WebElement element, String whatToLookFor) {
         WebDriverWait wait = null;
         boolean status = false;
-
         try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(4));
-            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
-            GS.reportStep("Deleting started....", "INFO", driver);
-            element = driver.findElement(By.xpath(("(//td[@class='table__action-table-cell']//div)[2]")));
-            mouseOverEventOnWebElement(element, driver);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
+            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
+            wait.until(ExpectedConditions.visibilityOf(element));
+            boolean isPresent = element.getText().contains(whatToLookFor);
+            if (isPresent) {
+                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was found", "PASS", driver);
+                status = true;
+            } else
+                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was not found", "FAIL", driver);
 
-            // element.click();
-            Thread.sleep(500);
-            element = driver.findElement(By.xpath("//*[text()='Delete']"));
-            mouseOverEventOnWebElement(element, driver);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-
-            // element.click();
-            Thread.sleep(500);
-            element = driver.findElement(By.xpath("//button[text()='Delete']"));
-            mouseOverEventOnWebElement(element, driver);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
-
-            // element.click();
         } catch (NoSuchElementException NSE) {
             GS.reportStep(NSE.getMessage(), "FAIL", driver);
         } catch (TimeoutException TO) {
@@ -764,56 +654,11 @@ public class UIMethods {
         } catch (Exception E) {
             GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
         }
-        return status;
 
-    }
-
-    /*
-     * Verify if the element is present and clickable
-     */
-    public boolean isElementPresent(WebDriver driver, WebElement UIElement) {
-        boolean status = false;
-        WebDriverWait wait;
-
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(32));//Prachi - increased by 2 secs
-            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
-            element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
-            status = true;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL", driver);
-        }
         return status;
     }
 
-    /**
-     * It will return the text from the attribute given.
-     * @param UIElement
-     * @param driver
-     * @param attribute
-     * @return
-     */
-    public String getTextFromAttribute(WebElement UIElement, WebDriver driver, String attribute) {
-        String data = "NoDataFound";
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-            wait.until(ExpectedConditions.visibilityOf(UIElement));
-            data = UIElement.getAttribute(attribute);
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        }
-        GS.reportStep("Data Returning is: " + data, "PASS", driver);
-        return data;
-
-    }
-
+    
     /**
      *     See if the given tag present in the current page
      * @param driver
@@ -837,25 +682,53 @@ public class UIMethods {
         return status;
     }
 
+    
     /**
-     *   Search if the given text element is found on the web page
-     * @param driver
-     * @param textToLookFor
-     * @return
+     * Verify given text is present on web page
      */
-    public boolean isThisTextPresent(WebDriver driver, String textToLookFor) {
-        boolean status=false;
-        WebDriverWait wait = null;
+    public int verifyTextPresentOnPage(WebDriver driver, String whatToLookFor) {
+        int status = 0;
+
         try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            WebElement UIElement = driver.findElement(By.xpath(textToLookFor));
-            wait.until(ExpectedConditions.visibilityOf(UIElement));
-            status=true;
+            Thread.sleep(3000);
+            UIMethods.waitForPageLoad(driver);
+            boolean isPresent = driver.getPageSource().contains(whatToLookFor);
+            if (isPresent) {
+                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was found", "PASS", driver);
+                status = 1;
+            } else
+                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was not found", "INFO", driver);
+
         } catch (NoSuchElementException NSE) {
-            status=false;
+            GS.reportStep(NSE.getMessage(), "FAIL", driver);
         } catch (TimeoutException TO) {
             GS.reportStep(TO.getMessage(), "FAIL", driver);
-            status=false;
+        } catch (Exception E) {
+            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
+        }
+
+        return status;
+    }
+
+
+        /*
+     * Verify if the element is present and clickable
+     */
+    public boolean isElementPresent(WebDriver driver, WebElement UIElement) {
+        boolean status = false;
+        WebDriverWait wait;
+
+        try {
+            wait = new WebDriverWait(driver, Duration.ofSeconds(32));//Prachi - increased by 2 secs
+            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
+            element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
+            status = true;
+        } catch (NoSuchElementException NSE) {
+            GS.reportStep(NSE.getMessage(), "FAIL", driver);
+        } catch (TimeoutException TO) {
+            GS.reportStep(TO.getMessage(), "FAIL", driver);
+        } catch (Exception E) {
+            GS.reportStep(E.getMessage(), "FAIL", driver);
         }
         return status;
     }
@@ -883,58 +756,8 @@ public class UIMethods {
         return status;
     }
 
-    /**
-     * Verify given text is present in a web element
-     */
-    public boolean verifyTextOfAnElement(WebDriver driver, WebElement element, String whatToLookFor) {
-        WebDriverWait wait = null;
-        boolean status = false;
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            wait.until(ExpectedConditions.visibilityOf(element));
-            boolean isPresent = element.getText().contains(whatToLookFor);
-            if (isPresent) {
-                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was found", "PASS", driver);
-                status = true;
-            } else
-                GS.reportStep("\tCheck: Expected message(" + whatToLookFor + ") was not found", "FAIL", driver);
 
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
 
-        return status;
-    }
-
-    /**
-     * Wait for the page to load with default page load time 30secs
-     */
-    public static void waitForPageLoad(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-        wait.until(webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState")
-                .equals("complete"));
-    }
-
-    /**
-     * Verify that search result has the searched term
-     *
-     * @param driver
-     * @param searchTerm
-     * @return
-     */
-    public boolean verifySearchResult(WebDriver driver, String searchTerm) {
-        List<WebElement> searchResult = driver.findElements(By.xpath("//table[@class='ui table']//td//span"));
-        for (WebElement result : searchResult) {
-            String fetchedName = getMyText(result, driver);
-            if (fetchedName.equalsIgnoreCase(searchTerm))
-                return true;
-        }
-        return false;
-    }
 
     /**
      * Verify that search result contains the searched term
@@ -980,8 +803,8 @@ public class UIMethods {
                         UIElement.isEnabled();
                         return true;
                     } catch ( StaleElementReferenceException e ) {
-//						GS.reportStep( e.getMessage() + "\n", "INFO", driver);
-//						GS.reportStep( "Trying again...", "INFO", driver);
+						GS.reportStep( e.getMessage() + "\n", "INFO", driver);
+						GS.reportStep( "Trying again...", "INFO", driver);
                         return false;
                     }
                 }
@@ -1020,16 +843,6 @@ public class UIMethods {
         return element;
     }
 
-
-
-    /**
-     * This method will click on the UIelement passed.
-     * @param driver
-     * @param UIElement
-     */
-    public static void clickElement(WebDriver driver, WebElement UIElement) {
-        UIElement.click();
-    }
     /**
      * Switch to child window
      * @param driver
@@ -1080,6 +893,37 @@ public class UIMethods {
      */
     public static boolean verifyIsSelected(WebDriver driver, WebElement UIElement) {
         return UIElement.isSelected();
+    }
+
+
+        
+    /**
+     * Waits for the element to be visible
+     *
+     * @param UIElement
+     * @param driver
+     * @return
+     *  true if element is visible and exception is not thrown, false otherwise
+     */
+
+    public boolean waitForThisElementToBeVisible(WebElement UIElement, WebDriver driver) {
+        WebDriverWait wait;
+        boolean isVisible = true;
+        try {
+            wait = new WebDriverWait(driver, Duration.ofSeconds(pageLoadTime));
+            wait.until(ExpectedConditions.visibilityOf(UIElement));
+
+        } catch (NoSuchElementException NSE) {
+           GS.reportStep(NSE.getMessage(), "FAIL", driver);
+           GS.takeScreenShot(driver);
+            isVisible = false;
+        } catch (TimeoutException TO) {
+            GS.reportStep(TO.getMessage(), "FAIL", driver);
+            GS.takeScreenShot(driver);
+            isVisible = false;
+        }
+
+        return isVisible;
     }
 
 }
