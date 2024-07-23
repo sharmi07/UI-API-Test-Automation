@@ -786,98 +786,63 @@ public class UIMethods {
         UIElement.sendKeys(Keys.BACK_SPACE);
     }
 
+    // /**
+    //  * This method will return whether the given element is enabled or disabled 
+    //  * @param driver
+    //  * @return
+    //  */
+    // public static boolean VerifyIsEnabledForUIElement(WebDriver driver, WebElement UIElement) {
+    //     boolean status = false;
+    //     WebDriverWait wait = null;
+    //     try {
+    //         wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
+    //         wait.until( new ExpectedCondition<Boolean>() {
+    //             @Override
+    //             public Boolean apply( WebDriver webDriver ) {
+    //                 try {
+    //                     UIElement.isEnabled();
+    //                     return true;
+    //                 } catch ( StaleElementReferenceException e ) {
+				// 		GS.reportStep( e.getMessage() + "\n", "INFO", driver);
+				// 		GS.reportStep( "Trying again...", "INFO", driver);
+    //                     return false;
+    //                 }
+    //             }
+    //         } );
+    //         if(UIElement.isEnabled())
+    //             status = true;
+
+    //         return status;
+    //     } catch (NoSuchElementException NSE) {
+    //         //GS.reportStep(NSE.getMessage(), "FAIL", driver);
+    //     } catch (TimeoutException TO) {
+    //         //GS.reportStep(TO.getMessage(), "FAIL",driver);
+    //     } catch (Exception E) {
+    //         //GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
+    //     }
+    //     return status;
+    //     //return UIElement.isEnabled();
+    // }
+
+    // /**
+    //  * This method will return enabled or disabled for the given element
+    //  * @param UIElement
+    //  * @param driver
+    //  * @return
+    //  *   true if enabled, false otherwise
+    //  */
+    // public static boolean isElementEnabled( WebElement UIElement, WebDriver driver) {
+    //     return UIElement.isEnabled();
+    // }
+
     /**
-     * This method will return enabled or disabled for passed UIelement.
+     * This method will return whether the given element is displayed or not
+     * @param UIElement
      * @param driver
      * @return
+     *   true if displayed, false otherwise
      */
-    public static boolean VerifyIsEnabledForUIElement(WebDriver driver, WebElement UIElement) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-            wait.until( new ExpectedCondition<Boolean>() {
-                @Override
-                public Boolean apply( WebDriver webDriver ) {
-                    try {
-                        UIElement.isEnabled();
-                        return true;
-                    } catch ( StaleElementReferenceException e ) {
-						GS.reportStep( e.getMessage() + "\n", "INFO", driver);
-						GS.reportStep( "Trying again...", "INFO", driver);
-                        return false;
-                    }
-                }
-            } );
-            if(UIElement.isEnabled())
-                status = true;
-
-            return status;
-        } catch (NoSuchElementException NSE) {
-            //GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            //GS.reportStep(TO.getMessage(), "FAIL",driver);
-        } catch (Exception E) {
-            //GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-        //return UIElement.isEnabled();
-    }
-
-    /**
-     * This method will return enabled or disabled for passed UIelement.
-     * @param driver
-     * @return
-     */
-    public static boolean VerifyUIElementStatus(WebDriver driver, WebElement UIElement) {
-        return UIElement.isEnabled();
-    }
-
-    public static WebElement getFromWithin( WebDriver driver, WebElement UIElement, String xPath) {
-        WebElement element;
-        try {
-            element = UIElement.findElement(By.xpath(xPath));
-        } catch (Exception E) {
-            element =null;
-        }
-        return element;
-    }
-
-    /**
-     * Switch to child window
-     * @param driver
-     */
-    public void switchToChildWindow(WebDriver driver)
-    {
-        try {
-            String pwin=driver.getWindowHandle();
-            Set<String> win=driver.getWindowHandles();
-            win.remove(pwin);
-            driver.switchTo().window(win.iterator().next());
-            GS.reportStep("Switched to child window", "PASS", driver);
-        } catch (Exception e) {
-            GS.reportStep("Unable to switch to to child window", "FAIL", driver);
-        }
-    }
-    /**
-     * Switch to frame using webelement
-     * @param element
-     * @param driver
-     */
-
-    public void switchToFrame(WebElement element, WebDriver driver)
-    {
-        try {
-            driver.switchTo().frame(element);
-            GS.reportStep("Switched to frame ", "PASS", driver);
-        } catch (Exception e) {
-            GS.reportStep("There is no frame unable to switch to frame ", "FAIL", driver);
-        }
-    }
-    /*
-     * Verify if the element is  not present and clickable
-     */
-    public boolean isElementNotPresent(WebDriver driver, WebElement UIElement) {
+    public boolean isElementNotPresent(WebElement UIElement, WebDriver driver) {
         try {
             UIElement.isDisplayed();
             return false;
@@ -886,12 +851,15 @@ public class UIMethods {
         }
 
     }
+	
     /**
-     * This method will verify the status of the checkbox.
+     * This method will verify the status of the checkbox
+     * @param UIElement
      * @param driver
      * @return
+     *   true if displayed, false otherwise
      */
-    public static boolean verifyIsSelected(WebDriver driver, WebElement UIElement) {
+    public static boolean verifyIsSelected(WebElement UIElement, WebDriver driver) {
         return UIElement.isSelected();
     }
 
@@ -925,5 +893,39 @@ public class UIMethods {
 
         return isVisible;
     }
+
+
+    /**
+     * Switch to child window
+     * @param driver
+     */
+    public void switchToChildWindow(WebDriver driver)
+    {
+        try {
+            String pwin=driver.getWindowHandle();
+            Set<String> win=driver.getWindowHandles();
+            win.remove(pwin);
+            driver.switchTo().window(win.iterator().next());
+            GS.reportStep("Switched to child window", "PASS", driver);
+        } catch (Exception e) {
+            GS.reportStep("Unable to switch to to child window", "FAIL", driver);
+        }
+    }
+    /**
+     * Switch to frame using webelement
+     * @param element
+     * @param driver
+     */
+
+    public void switchToFrame(WebElement element, WebDriver driver)
+    {
+        try {
+            driver.switchTo().frame(element);
+            GS.reportStep("Switched to frame ", "PASS", driver);
+        } catch (Exception e) {
+            GS.reportStep("There is no frame unable to switch to frame ", "FAIL", driver);
+        }
+    }
+
 
 }
