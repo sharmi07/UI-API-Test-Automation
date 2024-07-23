@@ -20,17 +20,86 @@ public class UIMethods {
     static int pageLoadTime = 36;
     GlobalStore GS = new GlobalStore();
 
-    /* All UI Read Methods */
+    /************ Click Helper Methods *********************/
 
+     /**
+     * Clicks on link
+     *
+     * @param UIElement
+     * @param driver
+     * @return
+     *         false if exception thrown, true otherwise
+     */
+    public boolean ClickOnLink(WebElement UIElement, WebDriver driver) {
+        boolean status = false;
+        WebDriverWait wait = null;
+        try {
+            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
+            wait.until( new ExpectedCondition<Boolean>() {
+                @Override
+                public Boolean apply( WebDriver webDriver ) {
+                    try {
+                        UIElement.click();
+                    } catch ( StaleElementReferenceException e ) {
+                        GS.reportStep( e.getMessage() + "\n", "INFO", driver);
+                        GS.reportStep( "Trying again...", "INFO", driver);
+                    }
+                }
+            } );
+            status = true;
+        } catch (NoSuchElementException NSE) {
+            GS.reportStep(NSE.getMessage(), "FAIL", driver);
+        } catch (TimeoutException TO) {
+            GS.reportStep(TO.getMessage(), "FAIL",driver);
+        } catch (Exception E) {
+            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
+        }
+        return status;
+    }
+
+     /**
+     * Checks for the presence of element and clicks
+     *
+     * @param UIElement
+     * @param driver
+     * @return
+     *         false if exception thrown, true otherwise
+     */
+    public boolean CheckButtonExistsAndClick(WebElement UIElement, WebDriver driver) {
+        boolean status = false;
+        WebDriverWait wait = null;
+        try {
+            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
+            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
+            mouseOverEventOnWebElement(UIElement, driver);
+            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", UIElement);
+            status = true;
+        } catch (NoSuchElementException NSE) {
+            GS.reportStep(NSE.getMessage(), "FAIL", driver);
+        } catch (TimeoutException TO) {
+            GS.reportStep(TO.getMessage(), "FAIL", driver);
+        } catch (Exception E) {
+            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
+        }
+        return status;
+
+    }
+
+    
     /**
-     * Wait for this field to visible on Home Page
+     * Waits for the element to be visible
+     *
+     * @param UIElement
+     * @param driver
+     * @return
+     *  true if element is visible and exception is not thrown, false otherwise
      */
 
-    public boolean waitForThisFieldToBeVisible(WebElement UIElement, WebDriver driver) {
+    public boolean waitForThisElementToBeVisible(WebElement UIElement, WebDriver driver) {
         WebDriverWait wait;
         boolean isVisible = true;
         try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(pageLoadTime));//Prachi- added
+            wait = new WebDriverWait(driver, Duration.ofSeconds(pageLoadTime));
             wait.until(ExpectedConditions.visibilityOf(UIElement));
 
         } catch (NoSuchElementException NSE) {
@@ -46,10 +115,18 @@ public class UIMethods {
         return isVisible;
     }
 
+
+    /****************** Text Helper Methods **********************/
+    
     /**
-     * Read data between div tags
-     **/
-    public String getMyText(WebElement UIElement, WebDriver driver) {
+     * Gets data within the HTML tag
+     *
+     * @param UIElement
+     * @param driver
+     * @return
+     *         data - text within the tag
+     */
+    public String getText(WebElement UIElement, WebDriver driver) {
         String data = "NoDataFound";
         WebDriverWait wait = null;
         try {
@@ -63,7 +140,6 @@ public class UIMethods {
             GS.reportStep(TO.getMessage(), "FAIL", driver);
             GS.takeScreenShot(driver);
         }
-        //GS.reportStep("Data Returning is: " + data, "PASS", driver);
         return data;
     }
 
@@ -106,13 +182,14 @@ public class UIMethods {
 
    
     /**
-     * It gets HREF
+     * Gets the url inside href 
      *
      * @param UIElement
      * @param driver
      * @return
+     *     data - url link inside href
      */
-    public String getMyHREFUrl(WebElement UIElement, WebDriver driver) {
+    public String getUrl(WebElement UIElement, WebDriver driver) {
 
         String data = "NoDataFound";
         WebDriverWait wait = null;
@@ -147,29 +224,6 @@ public class UIMethods {
 
     }
 
-    public int clickProfile(WebElement profileIcon, WebDriver driver, WebElement profileLabel) {
-        String data = "NoDataFound";
-        WebDriverWait wait = null;
-        int status = 1;
-
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            wait.until(ExpectedConditions.visibilityOf(profileIcon));
-            profileIcon.click();
-            Thread.sleep(500);
-            profileLabel.click();
-            status = 0;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-
-        return status;
-    }
-
   
 
     /**
@@ -199,135 +253,6 @@ public class UIMethods {
         return status;
     }
 
-    public int verifyLoginRefreshPage(WebDriver driver, WebElement email, WebElement pwd) {
-        String data = "NoDataFound";
-        WebDriverWait wait = null;
-        int status = 1;
-        try {
-            // Check email data
-            String val1 = email.getText();
-            // Check password data
-            String val2 = pwd.getText();
-            Thread.sleep(GS.waitTime);
-            if (val1.isEmpty() || val2.isEmpty()) {
-                GS.reportStep("After refresh values are gone", "PASS", driver);
-                status = 0;
-            } else {
-                GS.reportStep("Login refresh is not working properly", "FAIL", driver);
-            }
-
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-
-        return status;
-    }
-
-    /**
-     * Click on link
-     *
-     * @param UIElement
-     * @param driver
-     * @return
-     */
-    public boolean ClickOnLink(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-//			WebElement element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
-//			mouseOverEventOnWebElement(UIElement, driver);
-//			((JavascriptExecutor) driver).executeScript("arguments[0].click();", UIElement);
-            wait.until( new ExpectedCondition<Boolean>() {
-                @Override
-                public Boolean apply( WebDriver webDriver ) {
-                    try {
-                        UIElement.click();
-                        return true;
-                    } catch ( StaleElementReferenceException e ) {
-                        GS.reportStep( e.getMessage() + "\n", "INFO", driver);
-                        GS.reportStep( "Trying again...", "INFO", driver);
-                        return false;
-                    }
-                }
-            } );
-            status = true;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL",driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-    }
-    /**
-     * Click on button
-     *
-     * @param UIElement
-     * @param driver
-     * @return
-     */
-  /*  public boolean ClickOnRadioBtn(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        try {
-            UIElement.click();
-            status = true;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-    }*/
-
-    /**
-     * Click on Button
-     */
-    public boolean CheckButtonExistsAndClick(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));
-            //wait.until(ExpectedConditions.invisibilityOfElementLocated(By.className("loader")));
-            WebElement element = wait.until(ExpectedConditions.elementToBeClickable(UIElement));
-            mouseOverEventOnWebElement(UIElement, driver);
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", UIElement);
-            status = true;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-
-    }
-
-
-    /**
-     * Click on Button Using Java script
-     */
-    public boolean clickJs(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", UIElement);
-            status = true;
-        }  catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-
-    }
 
     /**
      * Enter data to text field, and before enter check if the field is visible
@@ -342,9 +267,6 @@ public class UIMethods {
         WebDriverWait wait = null;
         try {
             wait = new WebDriverWait(driver,  Duration.ofSeconds(pageLoadTime));//Prachi -added
-          //  WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
-         //   JavascriptExecutor jse = (JavascriptExecutor)driver;
-         //   jse.executeScript("arguments[0].click()", element);
             UIElement.clear();
             UIElement.sendKeys(data);
             status = true;
@@ -358,23 +280,6 @@ public class UIMethods {
         return status;
     }
 
-  /*  public boolean selectDropDownMenuItem(WebElement UIElement, WebDriver driver) {
-        boolean status = false;
-        WebDriverWait wait = null;
-        try {
-            wait = new WebDriverWait(driver, Duration.ofSeconds(MaxInteractiveWaitTime));
-            WebElement element = wait.until(ExpectedConditions.visibilityOf(UIElement));
-            // UIElement.sendKeys(data);
-            status = true;
-        } catch (NoSuchElementException NSE) {
-            GS.reportStep(NSE.getMessage(), "FAIL", driver);
-        } catch (TimeoutException TO) {
-            GS.reportStep(TO.getMessage(), "FAIL", driver);
-        } catch (Exception E) {
-            GS.reportStep(E.getMessage(), "FAIL_FAIL", driver);
-        }
-        return status;
-    }*/
 
     public boolean selectDropDownMenuItemByEnteringText(WebElement UIElement, WebDriver driver, String data) {
         boolean status = false;
@@ -395,7 +300,6 @@ public class UIMethods {
         return status;
     }
 
-    /** Text field operations */
 
     /**
      * It just enters the text to given field, with out checking if the field is
