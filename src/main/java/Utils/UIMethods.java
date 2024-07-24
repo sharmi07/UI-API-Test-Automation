@@ -34,7 +34,7 @@ public class UIMethods {
 
     /************ CLICK HELPER METHODS *********************/
 
-     /**
+    /**
      * Clicks on link
      *
      * @param UIElement
@@ -69,7 +69,7 @@ public class UIMethods {
         return status;
     }
 
-     /**
+    /**
      * Checks for the presence of element and clicks
      *
      * @param UIElement
@@ -184,7 +184,7 @@ public class UIMethods {
     }
 
     /**
-     * It modifies existing text field value to new value 1. Retrive existing value
+     * It modifies existing text field value to new value 1. Retrieve existing value
      * 2. Add new name to the existing one 3. Now, set this new value to the field
      *
      * @param driver
@@ -274,18 +274,15 @@ public class UIMethods {
 
     }
 
-  
-
-
-
     /**
-     * Enter data to text field, and before enter check if the field is visible
+     * Enter data to text field
      *
      * @param UIElement
      * @param driver
      * @param data
      * @return
      */
+	//Todo - add fluent wait for the text field to be visible
     public boolean enterDataToTextField(WebElement UIElement, WebDriver driver, String data) {
         boolean status = false;
         WebDriverWait wait = null;
@@ -326,20 +323,7 @@ public class UIMethods {
 
 
     /**
-     * It just enters the text to given field, with out checking if the field is
-     * displayed or not
-     *
-     * @param UIElement
-     * @param driver
-     * @param data
-     */
-    public static void justEnterText(WebElement UIElement, WebDriver driver, String data) {
-        UIElement.sendKeys(data);
-
-    }
-
-    /**
-     * It enters the text into text field and PREEE ENTER Key
+     * It enters the text into text field and Press ENTER Key
      *
      * @param UIElement
      * @param driver
