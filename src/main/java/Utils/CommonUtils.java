@@ -20,7 +20,7 @@ public class CommonUtils {
 
 
     /**
-     * This method will upload the file for choose file by passing path of the file
+     * This method uploads the file for choose file by passing path of the file
      * to load.
      *
      * @param fileLocation
@@ -45,10 +45,11 @@ public class CommonUtils {
     }
 
     /**
-     * Split the string at space
+     *  This method splits the string at space
      *
      * @param str
      * @return
+     *    splitted strings in an array
      */
     public static String[] splitString(String str) {
         String[] values = str.split(" ");
@@ -57,10 +58,11 @@ public class CommonUtils {
 
 
     /**
-     * Appends chars to the given string resulting in a string of 4 chars length
+     * This method appends chars to the given string until the string is of given length
      *
      * @param str
      * @return
+     *   random string generated with given string
      */
     public static String randomGenerator(String str, int length, String type) {
 
@@ -112,6 +114,13 @@ public class CommonUtils {
         return saltStr;
     }
 
+   /**
+    * This method generates string from any resource
+    *
+    * @param path
+    * @return
+    *     returns the string format of path
+    */
     public String generateStringFromResource(String path) throws IOException {
       /*  ObjectMapper objectMapper = new ObjectMapper();
         Pet p = objectMapper.readValue(Files.readAllBytes(Paths.get(path)),
