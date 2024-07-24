@@ -18,7 +18,7 @@ import static io.restassured.RestAssured.given;
 public class APIcaller {
 
 	/**
-	 * This method calls a get API
+	 * This method calls a get API 
 	 *
 	 * @param url
 	 * @param content
@@ -31,7 +31,7 @@ public class APIcaller {
 	}
 
 	/**
-	 * This method calls a get API
+	 * This method calls a get API without Auth
 	 *
 	 * @param url
 	 * @param json
@@ -47,7 +47,7 @@ public class APIcaller {
 	 *
 	 * @param url
 	 * @param json
-	 * @return
+	 * @return status code returned from API response
 	 */
 	public static int getStatusCode(String url, ContentType json, String parameter) {
 		Response res = given().header("Origin", GlobalStore.apiURL).contentType(json).when().get(url+parameter);
@@ -73,7 +73,7 @@ public class APIcaller {
 	 * @param json
 	 * @param Auth
 	 * @param UserId
-	 * @return
+	 * @return status code from delete API response
 	 */
 	public static int delete(String url, ContentType json, String Auth, String UserId) {
 		Response res = given().header("Origin", GlobalStore.apiURL).contentType(json).headers("Authorization", Auth).when().delete(url + "/" + UserId);
