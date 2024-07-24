@@ -17,10 +17,6 @@ import static io.restassured.RestAssured.given;
  */
 public class APIcaller {
 
-	//private static String AdminEmail = "jenkins_availadmin@avail.io";
-	//private static String AdminPassword = "Default123$";
-
-
 	/**
 	 * This method calls a get API
 	 *
@@ -82,23 +78,6 @@ public class APIcaller {
 	public static int delete(String url, ContentType json, String Auth, String UserId) {
 		Response res = given().header("Origin", GlobalStore.apiURL).contentType(json).headers("Authorization", Auth).when().delete(url + "/" + UserId);
 		return res.getStatusCode();
-	}
-
-
-
-	/**
-	 * Get UUID( unique token) for the user with user ID
-	 * 
-	 * @param url
-	 * @param json
-	 * @param Auth
-	 * @return
-	 */
-	/*public static String getUUID(String url, ContentType json, String Auth) {
-		//JsonPath res = get(url, json, Auth);
-	//	String UUID = res.getString("content.uuid");
-
-		//return UUID;
 	}
 
 
