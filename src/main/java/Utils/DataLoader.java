@@ -23,7 +23,7 @@ public class DataLoader extends GlobalStore {
         String HOMEDIR = System.getProperty("user.dir");
         String dataSheetFullPath = HOMEDIR + File.separator + "testdata" + File.separator + sheetName;
         File sheetHandle = new File(dataSheetFullPath);
-        //String env = GlobalStore.getEnv();
+
         /*Let's keep the default environment as QA for now*/
         String env = "QA";
         FileInputStream FIS;
@@ -45,11 +45,8 @@ public class DataLoader extends GlobalStore {
                 System.exit(100);
 
             }
-            // Get first/desired sheet from the workbook
-            // XSSFSheet sheet = workbook.getSheetAt(0);
 
             // Initialize data set
-            //int noRows = sheet.getLastRowNum();
             int noCols = sheet.getRow(0).getLastCellNum();
             System.out.println("Number of columns:"+ noCols);
 
@@ -61,7 +58,6 @@ public class DataLoader extends GlobalStore {
             String cellValue = null;
 
             int whichRowToGet = getRowNumForDataToRead(keyword, rowIterator);
-            // System.out.println("Row found for retirval:"+ whichRowToGet);
 
             // Initialize size
             data = new String[1][noCols];
