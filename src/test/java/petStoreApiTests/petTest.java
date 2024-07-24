@@ -56,13 +56,9 @@ public class petTest extends BaseTest {
 
         PetDemo demo = new PetDemo();
         demo.mapRequest(p);
-
         String requestBody = util.generateStringFromResource("target/pet.json");
-      //  System.out.println(requestBody);
         JsonPath res = APIcaller.post("/pet", ContentType.JSON, requestBody );
-      //  System.out.println(res.prettyPrint());
         String petName2 = res.getString("name");
-     //   System.out.println("Pet name from API is "+petName2);
 
         if(petName2.equals(petName))
             reportStep("PASSED: Pet name returned is "+petName, "PASS",driver);
@@ -80,7 +76,6 @@ public class petTest extends BaseTest {
         reportStep("Execution STARTED for the test: verifyGettingPetTest", "INFO");
         JsonPath res = APIcaller.getWithParameters("/pet/", "application/json","129" );
         String petName = res.getString("name");
-        System.out.println("Pet name from API is "+petName);
 
         if(petName.equals("Ishu"))
             reportStep("PASSED: Pet name returned is Ishu ", "PASS",driver);
